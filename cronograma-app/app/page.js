@@ -558,10 +558,10 @@ const MultiSelectDropdown = ({ label, options, selectedValues, onToggle, onClear
 
     const displayValue = useMemo(() => {
         if (selectedValues.length === 0) {
-            return `Todos os ${label}s`;
+            return `${label}`;
         }
         if (selectedValues.length === options.length) {
-            return `Todos os ${label}s (${options.length})`;
+            return `${label} (${options.length})`;
         }
         
         // CORREÇÃO SOLICITADA: Se for mais de um item, mostra a contagem e "Selecionados"
@@ -601,24 +601,28 @@ const MultiSelectDropdown = ({ label, options, selectedValues, onToggle, onClear
             </button>
 
             {isOpen && (
-                <div className="absolute z-30 mt-2 w-64 rounded-xl shadow-2xl bg-white ring-1 ring-black ring-opacity-5 p-2 max-h-80 overflow-y-auto">
+                <div className="absolute z-30 mt-2 w-full rounded-xl shadow-2xl bg-white ring-1 ring-black ring-opacity-5 p-2 max-h-80 overflow-y-auto">
                     
                     {/* Botão Selecionar Todos/Nenhum */}
                     <button
                         onClick={handleToggleSelectAll}
                         className="flex items-center justify-between w-full px-3 py-2 text-sm font-bold text-gray-700 rounded-lg hover:bg-gray-100 transition-colors mb-1 border-b border-gray-100"
                     >
-                        {selectedValues.length === options.length ? 'Limpar Seleção' : 'Selecionar Todos'}
+                        {selectedValues.length === options.length ? 'Limpar' : 'Todos'}
                         <Check className={`ml-2 h-4 w-4 ${selectedValues.length === options.length ? 'text-blue-500' : 'text-transparent'}`} />
                     </button>
 
-                    {options.map((option) => {
-                        const isSelected = selectedValues.includes(option);
+                    {options.map((option, index) => {
+                        const normalizedOption = normalizeText(option);
+                        const isSelected = selectedValues.includes(normalizedOption);
                         return (
                             <div
-                                key={option}
-                                className={`flex items-center justify-between px-3 py-2 text-sm rounded-lg cursor-pointer transition-colors 
-                                            ${isSelected ? 'bg-blue-50 text-blue-700 font-semibold' : 'text-gray-700 hover:bg-gray-50'}`}
+                                key={index}
+                                className={`flex
+                                     items-center justify-between px-3 py-2 text-sm rounded-lg cursor-pointer transition-colors 
+                                    ${isSelected ? 'bg-blue-50 text-blue-700 font-semibold' : 'text-gray-700 hover:bg-gray-50'}`}
+                                // Importante: Passa o valor ORIGINAL (option) para onToggle.
+                                // O handler (handleStateToggle/handleActivityToggle) no App fará a normalização antes de ARMAZENAR.
                                 onClick={() => onToggle(option)}
                             >
                                 <span>{option}</span>
@@ -675,7 +679,7 @@ const SingleSelectDropdown = ({ label, options, selectedValue, onChange }) => {
             </button>
 
             {isOpen && (
-                <div className="absolute z-30 mt-2 w-48 rounded-xl shadow-2xl bg-white ring-1 ring-black ring-opacity-5 p-2 max-h-80 overflow-y-auto">
+                <div className="absolute z-30 mt-2 w-full rounded-xl shadow-2xl bg-white ring-1 ring-black ring-opacity-5 p-2 max-h-80 overflow-y-auto">
                     
                     {options.map((option) => {
                         const isSelected = option === selectedValue;
@@ -702,7 +706,7 @@ const SingleSelectDropdown = ({ label, options, selectedValue, onChange }) => {
 const GanttChart = ({ 
     data, error, isLoading, 
     selectedYear, uniqueYears, onYearChange, 
-    selectedStates, uniqueStates, onStateToggle, onStateClear, 
+    selectedStates, uniqueStates, onStateToggle, onStateClear, // <-- ADICIONADO!
     selectedActivities, uniqueActivities, onActivityToggle, onActivityClear, 
     selectedStatuses, uniqueStatuses, onStatusToggle, onStatusClear, 
     onBarClick, preFilteredData 
@@ -716,6 +720,8 @@ const GanttChart = ({
     const currentCalendarYear = today.getFullYear();
     const isCurrentYearSelected = currentCalendarYear === currentYearNum; 
 
+
+// novo.js (Linha 542)
 
     // 2. Filtragem dos Dados: Por Ano, por Estado (UF), por Atividade e por Status
     const filteredData = useMemo(() => {
@@ -745,11 +751,12 @@ const GanttChart = ({
             const matchesActivity = !activityFilterIsActive || (normalizedDActivity && normalizedSelectedActivities.has(normalizedDActivity)); 
             
             // Verifica se o status calculado corresponde aos filtros
-            const matchesStatus = !statusFilterIsActive || (calculatedStatus && normalizedSelectedStatuses.has(calculatedStatus));
+            // CORREÇÃO: Normalizar o calculatedStatus antes de comparar com normalizedSelectedStatuses
+            const matchesStatus = !statusFilterIsActive || (calculatedStatus && normalizedSelectedStatuses.has(normalizeText(calculatedStatus)));
 
             return extractYear(d.inicio) === currentYearNum && matchesState && matchesActivity && matchesStatus;
         });
-    }, [preFilteredData, currentYearNum, selectedStates, selectedActivities, selectedStatuses]); 
+    }, [preFilteredData, currentYearNum, selectedStates, selectedActivities, selectedStatuses]);
 
 
     // 2. Extração dos Rótulos (Locais e Meses)
@@ -897,7 +904,7 @@ const GanttChart = ({
 
                     {/* Filtro de Estado (UF) - MULTI-SELEÇÃO */}
                     <MultiSelectDropdown 
-                        label="UF" 
+                        label="Estados" 
                         options={uniqueStates}
                         selectedValues={selectedStates}
                         onToggle={onStateToggle} // Chamada para handleStateToggle
@@ -906,7 +913,7 @@ const GanttChart = ({
 
                     {/* Filtro de Atividade - MULTI-SELEÇÃO */}
                     <MultiSelectDropdown 
-                        label="Atividade"
+                        label="Atividades"
                         options={uniqueActivities}
                         selectedValues={selectedActivities} 
                         onToggle={onActivityToggle} // Chamada para handleActivityToggle
@@ -1186,11 +1193,14 @@ export default function App() {
 
     // Extrai e ordena os estados (UF) únicos 
     const uniqueStates = useMemo(() => {
-        const states = preFilteredData
-            .map(d => d.estado)
-            .filter(s => s);
-        return Array.from(new Set(states)).sort();
-    }, [preFilteredData]);
+    const states = preFilteredData 
+        .map(d => d.estado) 
+        .filter(s => s)
+        .map(s => normalizeText(s)); // <--- CORREÇÃO: Normaliza o nome do estado
+
+    // Filtra nulos (resultado de strings vazias/apenas espaços) e garante a unicidade e ordenação
+    return Array.from(new Set(states)).filter(s => s !== null).sort(); 
+}, [preFilteredData]);
 
     // Extrai e ordena as atividades únicas
     const uniqueActivities = useMemo(() => {
@@ -1258,10 +1268,11 @@ export default function App() {
     // Handlers para Status (Multi-Select)
     const handleStatusToggle = (status) => {
         setSelectedStatuses(prev => {
-            if (prev.includes(status)) {
-                return prev.filter(s => s !== status);
+            const normalizedstatus = normalizeText(status);
+            if (prev.includes(normalizedstatus)) {
+                return prev.filter(s => s !== normalizedstatus);
             } else {
-                return [...prev, status];
+                return [...prev, normalizedstatus];
             }
         });
     };
