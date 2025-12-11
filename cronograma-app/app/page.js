@@ -188,7 +188,7 @@ const GanttDetailModal = ({ activity, onClose, onEdit, onDelete }) => {
 
     return (
         // Overlay de Fundo
-        <div className="fixed inset-0 bg-gray-900 bg-opacity-70 z-50 flex items-center justify-center p-4" onClick={onClose}>
+        <div className="fixed inset-0 bg-gray-800 bg-opacity-70 z-50 flex items-center justify-center p-4" onClick={onClose}>
             
             {/* Modal Card */}
             <div 
@@ -209,7 +209,7 @@ const GanttDetailModal = ({ activity, onClose, onEdit, onDelete }) => {
                 <div className="p-6">
                     <div className="space-y-4">
                         {/* MELHORIA DE NOMENCLATURA: Local/Usina */}
-                        <DetailRow label="Usina/Local (UFVS)" value={activity.local || 'N/A'} />
+                        <DetailRow label="Usina" value={activity.local || 'N/A'} />
                         {/* MELHORIA DE NOMENCLATURA: Estado/UF */}
                         <DetailRow label="UF" value={activity.estado || 'N/A'} />
                         <DetailRow label="Início Previsto" value={activity.inicio || 'N/A'} />
@@ -263,7 +263,7 @@ const DeleteConfirmationModal = ({ activity, onConfirm, onCancel, isDeleting }) 
                         <button 
                             onClick={onCancel} 
                             disabled={isDeleting}
-                            className="px-4 py-2 text-sm font-semibold border border-gray-300 rounded-lg hover:bg-gray-100 transition-colors disabled:opacity-50"
+                            className="px-4 py-2 text-sm font-semibold border border-gray-300 dark:text-gray-500 rounded-lg hover:bg-gray-100 transition-colors disabled:opacity-50"
                         >
                             Cancelar
                         </button>
@@ -363,7 +363,7 @@ const ActivityFormModal = ({
                     <div className="grid grid-cols-2 gap-4">
                         {/* -------------------- CAMPO LOCAL -------------------- */}
                         <label className="block">
-                            <span className="text-sm font-medium text-gray-700">Usina/Local (UFVS)*</span>
+                            <span className="text-sm font-medium text-gray-700">Usina</span>
                             {isEdit ? (
                                 // Modo Edição: Apenas exibe o texto, com fundo cinza para indicar 'somente leitura'
                                 <p className="mt-1 px-3 py-2 bg-gray-100 text-gray-800 rounded-lg border border-gray-300 font-semibold">{activityToEdit.local}</p>
@@ -374,7 +374,7 @@ const ActivityFormModal = ({
                                     value={formData.local}
                                     onChange={handleChange}
                                     required
-                                    className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                                    className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm dark:text-gray-500 focus:border-blue-500 focus:ring-blue-500"
                                 >
                                     <option value="" disabled>Selecione o local</option>
                                     {uniqueLocals.map(local => (
@@ -396,7 +396,7 @@ const ActivityFormModal = ({
                                     value={formData.estado}
                                     onChange={handleChange}
                                     required
-                                    className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                                    className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm dark:text-gray-500 focus:border-blue-500 focus:ring-blue-500"
                                 >
                                     <option value="" disabled>Selecione o estado</option>
                                     {uniqueStates.map(state => (
@@ -420,7 +420,7 @@ const ActivityFormModal = ({
                                 value={formData.atividade}
                                 onChange={handleChange}
                                 required
-                                className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                                className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm dark:text-gray-500 focus:border-blue-500 focus:ring-blue-500"
                             >
                                 <option value="" disabled>Selecione a atividade</option>
                                 {uniqueActivities.map(activity => (
@@ -439,7 +439,7 @@ const ActivityFormModal = ({
                                 value={formData.mes} 
                                 onChange={handleChange}
                                 required
-                                className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                                className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm dark:text-gray-500 focus:border-blue-500 focus:ring-blue-500"
                             >
                                 {MONTHS.map(mes => (
                                     <option key={mes} value={mes}>{mes}</option>
@@ -453,7 +453,7 @@ const ActivityFormModal = ({
                                 value={formData.ano} 
                                 onChange={handleChange}
                                 required
-                                className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                                className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm dark:text-gray-500 focus:border-blue-500 focus:ring-blue-500"
                             >
                                 {yearOptions.map(year => (
                                     <option key={year} value={year}>{year}</option>
@@ -467,7 +467,7 @@ const ActivityFormModal = ({
                                 value={formData.status} 
                                 onChange={handleChange}
                                 required
-                                className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                                className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm dark:text-gray-500 focus:border-blue-500 focus:ring-blue-500"
                             >
                                 {STATUS_OPTIONS.map(status => (
                                     <option key={status} value={status}>{status}</option>
@@ -875,7 +875,7 @@ const GanttChart = ({
     
 
     return (
-        <div className="flex flex-col w-full p-6 bg-white rounded-xl shadow-2xl overflow-x-auto mt-6 border border-gray-100">
+        <div className="flex flex-col w-full p-6 bg-white rounded-xl shadow-2xl overflow-x-auto mt-6 border border-gray-100 dark:bg-gray-100">
             
             {/* Cabeçalho do Gráfico, Legenda de Status e Filtros */}
             <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-6 pb-4 border-b border-gray-100">
@@ -948,7 +948,7 @@ const GanttChart = ({
                     {/* Rótulo Usina (Fixo) */}
                     {/* MELHORIA DE NOMENCLATURA: Usina/Local */}
                     <div className="text-sm font-bold text-gray-700 flex items-center justify-center border-r border-gray-200">
-                        Usina/Local
+                        Usina
                     </div>
                     
                     {/* Rótulos de Mês */}
@@ -1303,11 +1303,11 @@ export default function App() {
 
 
     return (
-        <main className="min-h-screen bg-slate-50 p-4 sm:p-8 font-sans">
+        <main className="min-h-screen bg-gray-900 p-4 sm:p-8 font-sans">
             <header className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 border-b border-gray-200 pb-4">
                 <div className="flex items-center space-x-4 mb-3 sm:mb-0">
-                    <h1 className="text-3xl font-extrabold text-gray-900">
-                        Cronograma de Atividades - Cliente Élis Energia
+                    <h1 className="text-3xl font-extrabold text-[#008BE4]">
+                        Cronograma de Atividades
                     </h1>
                 </div>
                 
@@ -1325,7 +1325,7 @@ export default function App() {
                         <span className="text-sm">Incluir Atividade</span>
                     </button>
                     
-                    {/* Botão de Atualizar Dados (Recarregar) */}
+                    {/* Botão de Atualizar Dados (Recarregar)
                     <button
                         onClick={fetchData}
                         className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg 
@@ -1340,7 +1340,7 @@ export default function App() {
                             <RefreshCcw className="h-4 w-4 mr-2" />
                         )}
                         <span className="text-sm">{isLoading ? 'Atualizando...' : 'Atualizar Dados'}</span>
-                    </button>
+                    </button> */}
                 </div>
             </header>
 
@@ -1414,8 +1414,8 @@ export default function App() {
 
 
             {/* Rodapé Adicionado */}
-            <footer className="mt-10 pt-6 border-t border-gray-200 text-center">
-                <p className="text-xs text-gray-500">
+            <footer className="mt-10 pt-6 border-t border-gray-500 text-center">
+                <p className="text-xs text-gray-300">
                     Interface Profissional de Gerenciamento de Cronogramas | Desenvolvido por Stroom.
                 </p>
             </footer>
