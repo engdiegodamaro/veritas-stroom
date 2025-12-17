@@ -4,8 +4,8 @@ import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 
 // ATENÇÃO: CHAVES HARDCODED. USE APENAS PARA DEBUG.
-const SUPABASE_URL = 'https://oimnezboqpaaynxawoah.supabase.co';
-const SUPABASE_ANON_KEY = 'sb_publishable_1vn5_rluv80tZuSzh5cVgA_vRy8cn0U';
+const SUPABASE_URL = 'https://vwfsszsanslhdrlznbzv.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_5NzjYtRINyaaxYKOD1_Tpw_uadr6RMZ';
 
 const supabase = createClient(
     SUPABASE_URL,
